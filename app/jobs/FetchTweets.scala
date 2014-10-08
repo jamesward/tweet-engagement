@@ -17,12 +17,16 @@ object FetchTweets extends App {
 
   Play.start(app)
 
+  val twitter = Twitter(app)
+  val salesforce = Salesforce(app)
+
   val job = for {
-    tweets             <- Twitter(app).fetchOriginalTweets("#df14")
-    users              <- Salesforce(app).createOrUpdateContacts(tweets.map(_.user))
-    sentimentTweets    <- Twitter(app).sentimentForTweets(tweets)
-    tweetsInSalesforce <- Salesforce(app).upsertTweets(sentimentTweets)
-  } yield tweetsInSalesforce
+    tweets             <- twitter.fetchOriginalTweets("#df14")
+    users              <- salesforce.createOrUpdateContacts(tweets.map(_.user))
+    sentimentTweets    <- twitter.sentimentForTweets(tweets)
+    tweetsInSalesforce <- salesforce.upsertTweets(sentimentTweets)
+    tasks              <- salesforce.createTasksForTweets(tweetsInSalesforce, 50)
+  } yield tasks
 
   job.onComplete {
     case Success(s) =>

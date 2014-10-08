@@ -6,7 +6,7 @@ import java.util.Date
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-case class Tweet(id: String, text: String, user: User, date: Date, sentiment: Option[Int] = None)
+case class Tweet(id: String, text: String, user: User, date: Date, sentiment: Option[Int] = None, salesforceId: Option[String] = None)
 
 object Tweet {
 
@@ -17,6 +17,7 @@ object Tweet {
     (__ \ "text").read[String] ~
     (__ \ "user").read[User] ~
     (__ \ "created_at").read[Date] ~
+    Reads.pure(None) ~
     Reads.pure(None)
   )(Tweet.apply _)
 
