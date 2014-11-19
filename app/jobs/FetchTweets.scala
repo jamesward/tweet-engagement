@@ -21,7 +21,7 @@ object FetchTweets extends App {
   val salesforce = Salesforce(app)
 
   val job = for {
-    tweets             <- twitter.fetchOriginalTweets("#df14")
+    tweets             <- twitter.fetchOriginalTweets("#SalesforceTour")
     users              <- salesforce.createOrUpdateContacts(tweets.map(_.user))
     sentimentTweets    <- twitter.sentimentForTweets(tweets)
     tweetsInSalesforce <- salesforce.upsertTweets(sentimentTweets)
