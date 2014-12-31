@@ -8,14 +8,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SalesforceSpec extends PlaySpec with OneAppPerSuite {
 
-
+  val salesforce = Salesforce(app)
 
   "Salesforce" must {
     "upsert a contact" in {
 
       val user = User("foo bar", "foo")
 
-      val json = await(Salesforce.upsertContact(user))
+      val json = await(salesforce.upsertContact(user))
 
       (json \ "success").asOpt[Boolean] mustBe Some(true)
     }
@@ -23,14 +23,14 @@ class SalesforceSpec extends PlaySpec with OneAppPerSuite {
 
       val user = User("Foo Bar", "foo")
 
-      val json = await(Salesforce.upsertContact(user))
+      val json = await(salesforce.upsertContact(user))
 
       (json \ "success").asOpt[Boolean] mustBe Some(true)
     }
     "delete a contact" in {
       // todo: proper cleanup
       val user = User("Foo Bar", "foo")
-      await(Salesforce.deleteContact(user))
+      await(salesforce.deleteContact(user))
     }
   }
 
